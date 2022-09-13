@@ -31,7 +31,8 @@ function encrypt(){
     let kpos = []
     let res = /^[a-zA-Z]+$/.test(key);
     if(!res) {
-        alert("Keyword Invalid!!!")
+        showSnakeBar();
+        return;
     }
     for (const x of key) {
         kpos.push(alphabet.indexOf(x));
@@ -52,6 +53,12 @@ function encrypt(){
 
 }
 
+function showSnakeBar() {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+
 const saveFileEncrypt = () => {
     result = document.getElementById("cipher_text").innerHTML;
     handleSaveFile(result,"ciphertext.txt");
@@ -65,6 +72,11 @@ function decrypt(){
     let plain_text = document.getElementById('plain_text');
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let result = "";
+    let res = /^[a-zA-Z]+$/.test(key);
+    if(!res) {
+        showSnakeBar();
+        return;
+    }
     let kpos = []
     for (const x of key) {
         kpos.push(alphabet.indexOf(x));
