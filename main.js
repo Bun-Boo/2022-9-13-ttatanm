@@ -23,7 +23,7 @@ function inputValid(e) {
 
 
 function encrypt(){
-    let plain_text = document.getElementById('input_plain_text').value.toUpperCase();
+    let plain_text = document.getElementById('input_plain_text').value;
     let key = document.getElementById('key_encrypt').value.toUpperCase();
     let cipher_text = document.getElementById('cipher_text');
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -39,17 +39,26 @@ function encrypt(){
     }
     let i = 0;
     for (const x of plain_text) {
-        if(alphabet.includes(x)){
+        if(alphabet.includes(x.toUpperCase())){
             if(i==kpos.length)
                 i=0;
-            let pos = alphabet.indexOf(x)+kpos[i++];
+            let pos = alphabet.indexOf(x.toUpperCase())+kpos[i++];
             if(pos>25) pos-=26;
-            result+=alphabet[pos];
+ 
+            result+= x === x.toUpperCase() ? alphabet[pos] : alphabet[pos].toLowerCase();
+
         }
         else
             result+=x;
     }
     cipher_text.innerHTML = result;
+
+}
+
+const pressEnterEncrypt = (e, flag)=>{
+    if(e.key === "Enter"){
+        flag ? encrypt() : decrypt();
+    }
 
 }
 
@@ -67,7 +76,7 @@ const saveFileEncrypt = () => {
 
 
 function decrypt(){
-    let cipher_text = document.getElementById('input_cipher_text').value.toUpperCase();
+    let cipher_text = document.getElementById('input_cipher_text').value;
     let key = document.getElementById('key_decrypt').value.toUpperCase();
     let plain_text = document.getElementById('plain_text');
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -79,16 +88,16 @@ function decrypt(){
     }
     let kpos = []
     for (const x of key) {
-        kpos.push(alphabet.indexOf(x));
+        kpos.push(alphabet.indexOf(x.toUpperCase()));
     }
     let i = 0;
     for (const x of cipher_text) {
-        if(alphabet.includes(x)){
+        if(alphabet.includes(x.toUpperCase())){
             if(i==kpos.length)
                 i=0;
-            let pos = alphabet.indexOf(x)-kpos[i++];
+            let pos = alphabet.indexOf(x.toUpperCase())-kpos[i++];
             if(pos<0) pos+=26;
-            result+=alphabet[pos];
+            result+= x === x.toUpperCase() ? alphabet[pos] : alphabet[pos].toLowerCase();
         }
         else
             result+=x;
@@ -98,14 +107,15 @@ function decrypt(){
 
 const saveFileDecrypt = () => {
     result = document.getElementById("plain_text").innerHTML;
-    if(result!=="")
-        handleSaveFile(result,"plaintext.txt");
+    // if(result!=="")
+    handleSaveFile(result,"plaintext.txt");
 }
 
 async function handleSaveFile(result,fileName){
+    if(result==="") return;
     if( window.showSaveFilePicker ) {
-      const handle = await showSaveFilePicker({
-        suggestedName: fileName,
+        const handle = await showSaveFilePicker({
+            suggestedName: fileName,
         types: [{
           description: 'txt',
           accept: {
